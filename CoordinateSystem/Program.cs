@@ -80,20 +80,35 @@ class Program
             return;
         }
 
-        if (pointX > 0 && consecutiveEastSteps !=  3)
+        // TO DO --  don't allow three steps in the same direction more or leess are allowed but not only three.
+        if (pointX > 0 && (currentRoute != "E" || consecutiveEastSteps < 2))
         {
-            //if (currentRoute.Length < 2 || currentRoute.Substring(currentRoute.Length - 2) != "EE")
-            //{
-                FindValidRoutes(pointX - 1, pointY, currentRoute + "E", routes, consecutiveEastSteps + 1, 0);
-            //}
+            FindValidRoutes(pointX - 1, pointY, currentRoute + "E", routes, consecutiveEastSteps + 1, 0);
         }
 
-        if (pointY > 0 && consecutiveNorthSteps != 3)
+        if (pointY > 0 && (currentRoute != "N" || consecutiveNorthSteps < 2))
         {
-            //if (currentRoute.Length < 2 || currentRoute.Substring(currentRoute.Length - 2) != "NN")
-            //{
-                FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1);
-            //}
+            FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1);
         }
+
+        //if (pointX > 0 && consecutiveEastSteps != 3)
+        //{
+        //    FindValidRoutes(pointX - 1, pointY, currentRoute + "E", routes, consecutiveEastSteps + 1, 0, 'E', stepCount +1);
+        //}
+
+        //if (consecutiveEastSteps == 3 && pointX > 3 && pointY == 0)
+        //{
+        //    FindValidRoutes(pointX, pointY - 1, currentRoute + "E", routes, 0, consecutiveNorthSteps + 1);
+        //}
+
+        //if (consecutiveNorthSteps == 3 && pointY > 3 && pointX == 0)
+        //{
+        //    FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1);
+        //}
+
+        //if (pointY > 0 && consecutiveNorthSteps != 3)
+        //{
+        //   FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1, 'N', stepCount + 1);
+        //}
     }
 }
