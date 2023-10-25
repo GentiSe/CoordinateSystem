@@ -80,7 +80,7 @@ class Program
             return;
         }
 
-        if (pointX > 0 && consecutiveEastSteps < 3)
+        if (pointX > 0 && consecutiveEastSteps !=  3)
         {
             //if (currentRoute.Length < 2 || currentRoute.Substring(currentRoute.Length - 2) != "EE")
             //{
@@ -88,7 +88,7 @@ class Program
             //}
         }
 
-        if (pointY > 0 && consecutiveNorthSteps < 3)
+        if (pointY > 0 && consecutiveNorthSteps != 3)
         {
             //if (currentRoute.Length < 2 || currentRoute.Substring(currentRoute.Length - 2) != "NN")
             //{
