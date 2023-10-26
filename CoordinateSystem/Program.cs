@@ -16,6 +16,11 @@ class Program
 
             if (int.TryParse(inputX, out var pointX) && int.TryParse(inputY, out var pointY))
             {
+                if(pointX == 1000 || pointY == 1000)
+                {
+                    Console.WriteLine("X and Y should be between 0 and 1000.");
+                    Main();
+                }
 
                 int validPaths = CountValidPaths(pointX, pointY);
 
