@@ -6,12 +6,6 @@ class Program
     {
         bool continueProcessing = false;
 
-        int maxConsecutiveSteps = 3; // Allow up to 3 consecutive steps
-
-
-        int pointX = 0; 
-        int pointY = 0; 
-
         do
         {
             Console.Write("Enter the X point: ");
@@ -20,22 +14,19 @@ class Program
             Console.Write("Enter the Y point: ");
             var inputY = Console.ReadLine();
 
-            if (int.TryParse(inputX, out pointX) && int.TryParse(inputY, out pointY))
+            if (int.TryParse(inputX, out var pointX) && int.TryParse(inputY, out var pointY))
             {
-                var coordinateSystemPoints = new Point
-                {
-                    PointX = pointX,
-                    PointY = pointY
-                };
 
-                int validPaths = CountValidPaths(coordinateSystemPoints.PointX, coordinateSystemPoints.PointY);
+                int validPaths = CountValidPaths(pointX, pointY);
+
                 Console.WriteLine("Number of valid paths: " + validPaths);
 
                 if (validPaths > 0)
                 {
                     Console.WriteLine("Routes for each valid path :");
-                    List<string> routes = new List<string>();
-                    FindValidRoutes(coordinateSystemPoints.PointX, coordinateSystemPoints.PointY, "", routes, 0, 0);
+                    var routes = new List<string>();
+
+                    FindValidRoutes(pointX, pointY);
                     foreach (var route in routes)
                     {
                         Console.WriteLine(route);
@@ -64,51 +55,84 @@ class Program
 
     }
 
-    static int CountValidPaths(int X, int Y)
+
+    static int CountValidPaths(int pointX, int pointY)
     {
-        if (X == 0 || Y == 0) //test
+        if (pointX == 0 || pointY == 0) //test
             return 1;
 
-        return CountValidPaths(X - 1, Y) + CountValidPaths(X, Y - 1);
+        return CountValidPaths(pointX - 1, pointY) + CountValidPaths(pointX, pointY - 1);
+
     }
 
-    static void FindValidRoutes(int pointX, int pointY, string currentRoute, List<string> routes, int consecutiveEastSteps, int consecutiveNorthSteps)
+    static void FindValidRoutes(int pointX, int pointY)
     {
-        if (pointX == 0 && pointY == 0)
+        var validRoutes = new List<string>();
+
+        var stack = new Stack<(int, int, string)>();
+        stack.Push((pointX, pointY, ""));
+
+        var iteration = 0;
+        while (stack.Count > 0)
         {
-            routes.Add(currentRoute);
-            return;
+            iteration++;
+            var (i, j, route) = stack.Pop();
+
+            if (i == 0 && j == 0)
+            {
+                var routeContainsThreeConsecutiveSteps = CheckForThreeConsecutiveSteps(route);
+                if (!routeContainsThreeConsecutiveSteps)
+                {
+                    validRoutes.Add(route);
+                    continue;
+
+                }
+            }
+
+            if (i > 0)
+            {
+                stack.Push((i - 1, j, route + "E"));
+            }
+
+            if (j > 0)
+            {
+                stack.Push((i, j - 1, route + "N"));
+            }
         }
 
-        // TO DO --  don't allow three steps in the same direction more or leess are allowed but not only three.
-        if (pointX > 0 && (currentRoute != "E" || consecutiveEastSteps < 2))
+        Console.WriteLine("Number of valid routes: " + validRoutes.Count);
+        Console.WriteLine("Valid routes: ");
+        foreach (string route in validRoutes)
         {
-            FindValidRoutes(pointX - 1, pointY, currentRoute + "E", routes, consecutiveEastSteps + 1, 0);
+            Console.WriteLine(route);
         }
-
-        if (pointY > 0 && (currentRoute != "N" || consecutiveNorthSteps < 2))
-        {
-            FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1);
-        }
-
-        //if (pointX > 0 && consecutiveEastSteps != 3)
-        //{
-        //    FindValidRoutes(pointX - 1, pointY, currentRoute + "E", routes, consecutiveEastSteps + 1, 0, 'E', stepCount +1);
-        //}
-
-        //if (consecutiveEastSteps == 3 && pointX > 3 && pointY == 0)
-        //{
-        //    FindValidRoutes(pointX, pointY - 1, currentRoute + "E", routes, 0, consecutiveNorthSteps + 1);
-        //}
-
-        //if (consecutiveNorthSteps == 3 && pointY > 3 && pointX == 0)
-        //{
-        //    FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1);
-        //}
-
-        //if (pointY > 0 && consecutiveNorthSteps != 3)
-        //{
-        //   FindValidRoutes(pointX, pointY - 1, currentRoute + "N", routes, 0, consecutiveNorthSteps + 1, 'N', stepCount + 1);
-        //}
     }
+
+    static bool CheckForThreeConsecutiveSteps(string route)
+    {
+        int consecutiveCount = 1; 
+
+        for (int i = 1; i < route.Length; ++i)
+        {
+            if (route[i] == route[i - 1]) // Check if next character is same as the current one.
+            {
+                consecutiveCount++;
+                if (consecutiveCount == 3)
+                {
+                    if (i + 1 >= route.Length || route[i + 1] != route[i]) //Check if the next following character is the same as last one.
+                    {
+                        return true; // Found three consecutive characters without being broken then return true
+                    }
+                }
+            }
+            else
+            {
+                consecutiveCount = 1; // Reset the count
+            }
+        }
+
+        return false; // return
+    }
+
+
 }

@@ -8,7 +8,7 @@ namespace CoordinateSystem
 {
     public class Point
     {
-        public int PointX { get; set; }
-        public int PointY { get; set; }
+        public int PointX { get; set; } = 0;
+        public int PointY { get; set; } = 0;
     }
 }
